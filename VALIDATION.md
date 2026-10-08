@@ -169,3 +169,5 @@ Review 14297 found that the generated Progress component did not forward its num
 
 
 Final review 14302 identified retained worker mounts and Python caches after replacing a recording. The upload and bundled-example paths now terminate the previous worker immediately. An actual browser check built Healthy MATLAB, replaced it with the public AX6 example, built its index, then selected and rebuilt Healthy. Each replacement terminated the old worker before the next Build; the three workers ended in terminated, terminated, alive states. All three dataset indexes loaded successfully. TypeScript, the three WORKERFS tests and the changed-file React Doctor check passed.
+
+The second finding from review 14302 is resolved by generating full frontend dependency notices from emitted JavaScript, CSS imports and font assets. The production build includes 62 package notices totaling 100,714 bytes; React, ReactDOM, TanStack Router/Query, Radix, Geist, Tailwind and animation CSS were verified. Worker and Python notices remain included. TypeScript and the subpath production build pass.

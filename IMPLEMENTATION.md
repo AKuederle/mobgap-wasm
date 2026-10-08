@@ -28,6 +28,8 @@ Parent owns browser integration, verification, commits, review and PR delivery. 
 
 COMPACTION CONTINUITY: Re-read implement-code-change and the task-defining artifacts before continuing after compaction or session restoration.
 
+Final review 14302 requires complete frontend dependency copyright and license notices in the deployed build. The runtime agent owns a build-time notice collector for actual bundled JavaScript, CSS imports and emitted fonts, plus its documentation. Verify React, ReactDOM, TanStack, Radix and Geist notices in a real build; retain worker/Python notices and exclude unrelated build tools. Parent owns the correction commit and review, without another whole-stack panel.
+
 ## Direct worker replacement
 
 Before moving or deploying the demo, replace the hidden JupyterLite iframe with a dedicated classic Xeus worker. Preserve the runtime API used by the four routes, genuine Numba, the pinned scientific environment, WORKERFS File mounts without whole-input copying, startup failure/retry, cancellation and fatal-memory cleanup. Use the pinned Xeus core and mambajs-core bootstrap APIs. Remove generated Jupyter application assets and source maps from delivery, and measure the remaining bundle and first initialization requests. Audit plotting dependencies only through actual import and both-preset tests; retain declared LLVM dependencies such as Graphviz.
