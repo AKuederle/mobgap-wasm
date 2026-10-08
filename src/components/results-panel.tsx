@@ -139,7 +139,10 @@ export function ResultsPanel({
               ) : null}
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-              <p>{table.rows.length.toLocaleString()} entries</p>
+              <p>
+                {table.rows.length.toLocaleString()}{" "}
+                {table.rows.length === 1 ? "entry" : "entries"}
+              </p>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
