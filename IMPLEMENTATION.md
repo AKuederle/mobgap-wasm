@@ -40,10 +40,10 @@ The reviewed history is preserved. Normal correction commits 2830ba1 (failed-rou
 
 ## Results and recording UI follow-up
 
-COMPACTION CONTINUITY: Re-read implement-code-change and the task-defining artifacts before continuing after compaction or session restoration.
-
 User acceptance: remove unnecessary results headings/icons/prose; add a compact WB/stride count table for each recording; use recording terminology; remove redundant back navigation in favor of the stepper; download all completed recording tables as ZIP; default to first completed recording; show a small loop indicator beside Running for the active recording.
 
 Base: 33eb3a723e44e8d0d3e5abdb3bda790d50ef3617, clean worktree. Preserve prior reviewed history. One review unit: simplify result inspection/export and recording navigation. Gate: baseline and final build, browser inspection of results/selection/running and empty/partial states, extracted ZIP contents versus individual CSV, React Doctor, commit/push and review closure. Browser checks are sufficient for these UI changes; no new permanent test framework or Python tests. Parent owns implementation and delivery to existing PR #1.
 
 Follow-up verification: baseline and final subpath builds pass; React Doctor remains 86/100 with the same two pre-existing advisories. Browser fixture using previously verified public HA results confirms first-recording default, 6 WBs/47 strides, genuine zero counts, failed recording labeling, no result headings/back links, and narrow-screen overflow confined to result tables. Downloaded ZIP has 16 CSVs for two completed recordings, valid CRCs, exact per-table values, and byte-identical individual CSV export.
+
+Follow-up implementation b7e0b1c passed automatic review 14317 and final task-range review 14318 against base 33eb3a7. Both are closed with no findings; no correction commits or history rewriting were needed. Browser checks also verified explicit recording selection, pagination, the single active Running spinner, navigation lock, cancellation preserving results, and ZIP disabled when no recordings completed. Final build and diff checks pass.
