@@ -12,7 +12,8 @@ export interface DirectWorkerApi {
   initialize(options: IXeusWorkerKernel.IOptions): Promise<void>
   processMessage(event: unknown): Promise<void>
   writeBootstrap(bytes: Uint8Array): void
-  callGlobalReceiver(name: string, method: string, ...args: unknown[]): unknown
+  mountFiles(recording: File, metadata: File | undefined, folder: string): { recording: string; metadata?: string }
+  unmountFiles(): void
 }
 
 class MobgapXeusWorker extends XeusRemoteKernelBase implements DirectWorkerApi {
@@ -44,7 +45,7 @@ class MobgapXeusWorker extends XeusRemoteKernelBase implements DirectWorkerApi {
     const untarjs = await initUntarJS(() => new URL(unpackWasmName, options.baseUrl).href)
     const installed = await bootstrapEmpackPackedEnvironment({
       empackEnvMeta,
-      pkgRootUrl: new URL('kernel_packages/', root).href,
+      pkgRootUrl: new URL('kernel_packages', root).href,
       Module: this.Module,
       logger: this.logger,
       untarjs,
@@ -73,9 +74,26 @@ class MobgapXeusWorker extends XeusRemoteKernelBase implements DirectWorkerApi {
     this.Module.FS.writeFile('/mobgap-app.zip', bytes)
   }
 
-  callGlobalReceiver(name: string, method: string, ...args: unknown[]): unknown {
-    const scope = globalThis as unknown as Record<string, Record<string, (...args: unknown[]) => unknown>>
-    return scope[name][method](...args)
+  mountFiles(recording: File, metadata: File | undefined, folder: string) {
+    this.unmountFiles()
+    const fs = this.Module.FS
+    const backend = (fs as unknown as { filesystems: { WORKERFS?: unknown } }).filesystems.WORKERFS
+      ?? (globalThis as unknown as { WORKERFS: unknown }).WORKERFS
+    fs.mkdirTree(folder)
+    fs.mount(backend, { blobs: [
+      { name: 'recording', data: recording },
+      ...(metadata ? [{ name: 'metadata', data: metadata }] : []),
+    ] }, folder)
+    this.mountedFolder = folder
+    return { recording: `${folder}/recording`, metadata: metadata ? `${folder}/metadata` : undefined }
+  }
+
+  private mountedFolder?: string
+  unmountFiles() {
+    if (!this.mountedFolder) return
+    this.Module.FS.unmount(this.mountedFolder)
+    this.Module.FS.rmdir(this.mountedFolder)
+    this.mountedFolder = undefined
   }
 }
 

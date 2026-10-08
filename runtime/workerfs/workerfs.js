@@ -9,6 +9,7 @@
 // resolved for the classic Emscripten filesystem used by this Xeus kernel.
 (() => {
   const { FS, ERRNO_CODES } = globalThis.Module;
+  if (FS.filesystems.WORKERFS) return;
   const WORKERFS = {
     DIR_MODE: 16895,
     FILE_MODE: 33279,
