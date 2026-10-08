@@ -161,3 +161,8 @@ File-based routes produced real directory index.html documents for Upload, Datas
 ## Standalone extraction checks
 
 The standalone checkout pins the canonical mobgap submodule to core PR #268. After adapting fixture and bootstrap paths, the native adapter suite passed 32 tests and the WORKERFS suite passed three tests. The production build with /mobgap-wasm/ as BASE_URL passed with the generated route documents. CI rebuilds runtime assets from scratch before publishing; ignored local runtime caches are not part of the repository.
+
+
+The first clean GitHub Actions build and Pages deployment succeeded in run 37807624050. Both bundled MATLAB presets completed through the published Upload → Dataset → Progress → Results workflow. Healthy returned 6 walking bouts, 60 initial contacts and 47 strides; Impaired returned 5 bouts, 98 contacts and 84 strides. All four direct page URLs returned HTTP 200, while missing runtime/assets returned 404. Reloading Results preserved query settings, requested recording reselection and made no runtime requests. The published document had zero iframes, an empty URL hash and no logo images.
+
+Review 14297 found that the generated Progress component did not forward its numeric value to Radix. Passing the value now exposes aria-valuenow and the correct loading/complete state. A rendered-markup check covered 0, 25 and 100 percent; production build and React Doctor regression checks passed.
