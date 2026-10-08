@@ -43,10 +43,10 @@
       "sha256": "80335c15cceebcbe5528fbc839194e36f36493dcc3ec8889aa218456bd7a34d4",
       "md5": "5720c0175cfdb18ffafc6e2a346cf1f1"
     },
-    "cwa_reader_rs-0.4.0-h7223423_pr7_84891bbb_1.tar.bz2": {
+    "cwa_reader_rs-0.5.0-h7223423_0.tar.bz2": {
       "arch": "wasm32",
-      "build": "h7223423_pr7_84891bbb_1",
-      "build_number": 1,
+      "build": "h7223423_0",
+      "build_number": 0,
       "depends": [
         "python ==3.13.1 h_2efca29_11_cp313",
         "python_abi ==3.13 9_cp313",
@@ -54,18 +54,18 @@
         "numpy ==2.4.6 py313hcf5bae3_0",
         "pandas ==3.0.6 np23py313h124dbc7_0",
         "emscripten-abi >=4,<5.0a0",
-        "python_abi 3.13.* *_cp313",
-        "numpy >=2.2,<3"
+        "numpy >=2.2,<3",
+        "python_abi 3.13.* *_cp313"
       ],
       "license": "MIT",
       "name": "cwa_reader_rs",
       "platform": "emscripten",
       "subdir": "emscripten-wasm32",
-      "timestamp": 1791467798514,
-      "version": "0.4.0",
-      "size": 177248,
-      "sha256": "6e44247cdaed915f8e60a4e7da0139d140427e4cd3c90927f97f3da4449cfdc3",
-      "md5": "ca39877881430d6498ab64439ca6eb34"
+      "timestamp": 1791477320998,
+      "version": "0.5.0",
+      "size": 173726,
+      "sha256": "670b79b6b14d326293210a3da61acfb71ae48a5ccd0f138111060e1a9aa15df9",
+      "md5": "275798dbe94f245754b17756f4b6cf84"
     }
   },
   "packages.conda": {},
