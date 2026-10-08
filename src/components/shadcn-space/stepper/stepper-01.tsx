@@ -12,7 +12,7 @@ import type { SessionState } from "@/lib/session";
 const steps = [
   { path: "/dataset", title: "Dataset", icon: File },
   { path: "/metadata", title: "Metadata", icon: User },
-  { path: "/select", title: "Select rows", icon: ListChecks },
+  { path: "/select", title: "Recordings", icon: ListChecks },
   { path: "/running", title: "Running", icon: Play },
   { path: "/results", title: "Results", icon: ChartNoAxesCombined },
 ] as const;

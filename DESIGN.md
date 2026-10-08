@@ -10,4 +10,6 @@ Route guards enforce metadata prerequisites, runtime readiness, and the processi
 
 The preparation page is fullscreen, with no application header, footer or stepper. It differentiates downloading missing analysis tools from starting cached tools. Only complete current asset caches qualify for background startup. Cached startup never falls back to downloading large assets silently.
 
-Use real download and processed-row progress. No implementation notes appear in the workflow. Errors explain what the user can do; detailed diagnostics go to the developer console. Use system-scale typography, tabular numbers, semantic shadcn colors, and restrained motion.
+Use real download and processed-recording progress. No implementation notes appear in the workflow. Errors explain what the user can do; detailed diagnostics go to the developer console. Use system-scale typography, tabular numbers, semantic shadcn colors, and restrained motion.
+
+Results use a compact recording/WB/stride summary above the recording and table selectors. Keep only necessary labels, download actions, and table pagination. Show a small rotating loop next to Running for the recording currently being processed, respecting reduced-motion settings.

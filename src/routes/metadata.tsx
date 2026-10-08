@@ -1,9 +1,4 @@
-import {
-  createFileRoute,
-  redirect,
-  Link,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { useSession } from "@/lib/session";
@@ -347,9 +342,6 @@ function MetadataPage() {
             </form.Field>
           )}
           <div className="flex flex-wrap gap-3">
-            <Button variant="outline" asChild>
-              <Link to="/dataset">Back</Link>
-            </Button>
             <form.Subscribe selector={(state) => state.isSubmitting}>
               {(submitting) => (
                 <Button type="submit" disabled={submitting}>

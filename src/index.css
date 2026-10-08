@@ -147,23 +147,6 @@
   line-height: 1.6;
   color: var(--muted-foreground);
 }
-.results-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  padding-block: 17px;
-  border-block: 1px solid var(--border);
-}
-.results-stats dt {
-  font-size: 11px;
-  color: var(--muted-foreground);
-}
-.results-stats dd {
-  margin-top: 5px;
-  font-size: 23px;
-  font-weight: 550;
-  font-variant-numeric: tabular-nums;
-}
 .results-table-section th {
   font-size: 11px;
   white-space: nowrap;
@@ -207,9 +190,6 @@
   }
   .page-intro h1 {
     font-size: 24px;
-  }
-  .results-stats {
-    grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (prefers-reduced-motion: reduce) {

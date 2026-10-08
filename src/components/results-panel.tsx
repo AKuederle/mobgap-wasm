@@ -1,11 +1,5 @@
-import {
-  ArrowDownToLine,
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle2,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -25,7 +19,7 @@ import {
 import { Field, FieldLabel } from "@/components/ui/field";
 import type { AnalysisResult } from "@/lib/contracts";
 
-type ResultTable = AnalysisResult["tables"][string];
+import { downloadBlob, tableCsv } from "@/lib/result-download";
 const PAGE_SIZE = 25;
 const labels: Record<string, string> = {
   walking_bouts: "Walking bouts",
@@ -46,32 +40,8 @@ const cellText = (value: unknown): string => {
   if (typeof value === "object") return JSON.stringify(value);
   return String(value);
 };
-function csvCell(value: unknown): string {
-  const text =
-    value === null || value === undefined
-      ? ""
-      : typeof value === "object"
-        ? JSON.stringify(value)
-        : String(value);
-  return `"${text.replaceAll('"', '""')}"`;
-}
-function downloadCsv(table: ResultTable, filename: string) {
-  const rows = table.rows.map((row) => row.map(csvCell).join(","));
-  const csv =
-    "\ufeff" + [table.columns.map(csvCell).join(","), ...rows].join("\r\n");
-  const url = URL.createObjectURL(
-    new Blob([csv], { type: "text/csv;charset=utf-8" }),
-  );
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
 export function ResultsPanel({
   result,
-  recordingLabel,
   downloadPrefix = "mobgap",
   selectedTable: requestedTable,
   onTableChange,
@@ -79,7 +49,6 @@ export function ResultsPanel({
   onPageChange,
 }: {
   result: AnalysisResult;
-  recordingLabel: string;
   downloadPrefix?: string;
   selectedTable?: string;
   onTableChange: (table: string) => void;
@@ -98,47 +67,8 @@ export function ResultsPanel({
     ? Math.max(1, Math.ceil(table.rows.length / PAGE_SIZE))
     : 1;
   const page = Math.min(requestedPage, totalPages - 1);
-  const statistics = [
-    ["Walking bouts", result.summary.walkingBouts],
-    ["Gait sequences", result.summary.gaitSequences],
-    ["Initial contacts", result.summary.initialContacts],
-    ["Strides", result.summary.strides],
-  ] as const;
-
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <div className="mb-2 flex items-center gap-2">
-            <CheckCircle2 className="size-4 text-primary" />
-            <Badge variant="secondary">Analysis complete</Badge>
-          </div>
-          <h2 className="text-xl font-semibold tracking-tight">Your results</h2>
-          <p className="mt-1 text-sm text-muted-foreground break-words">
-            {recordingLabel}
-          </p>
-        </div>
-        <div className="text-right text-xs text-muted-foreground">
-          <p>
-            {result.preset === "auto"
-              ? "Auto (cohort selection)"
-              : result.preset === "healthy"
-                ? "Healthy walking preset"
-                : "Impaired walking preset"}
-          </p>
-          <p className="mt-1 tabular-nums">
-            {result.summary.processingSeconds.toFixed(2)} s computation
-          </p>
-        </div>
-      </div>
-      <dl className="results-stats">
-        {statistics.map(([label, value]) => (
-          <div key={label}>
-            <dt>{label}</dt>
-            <dd>{numericFormat.format(value)}</dd>
-          </div>
-        ))}
-      </dl>
+    <div className="flex min-w-0 flex-col gap-4">
       <div className="results-table-section">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <Field className="w-full max-w-xs">
@@ -163,13 +93,12 @@ export function ResultsPanel({
             disabled={!table}
             onClick={() =>
               table &&
-              downloadCsv(
-                table,
+              downloadBlob(
+                new Blob([tableCsv(table)], { type: "text/csv;charset=utf-8" }),
                 `${downloadPrefix}-${result.preset}-${selectedTable}.csv`,
               )
             }
           >
-            <ArrowDownToLine data-icon="inline-start" />
             Download CSV
           </Button>
         </div>
@@ -205,20 +134,17 @@ export function ResultsPanel({
               </Table>
               {table.rows.length === 0 ? (
                 <p className="p-8 text-center text-sm text-muted-foreground">
-                  No rows in this result table.
+                  No entries.
                 </p>
               ) : null}
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-              <p>
-                {table.rows.length.toLocaleString()} rows · Values rounded for
-                display; CSV exports values without display rounding.
-              </p>
+              <p>{table.rows.length.toLocaleString()} entries</p>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Previous rows"
+                  aria-label="Previous page"
                   disabled={page === 0}
                   onClick={() => onPageChange(page - 1)}
                 >
@@ -230,7 +156,7 @@ export function ResultsPanel({
                 <Button
                   variant="outline"
                   size="icon-sm"
-                  aria-label="Next rows"
+                  aria-label="Next page"
                   disabled={page + 1 >= totalPages}
                   onClick={() => onPageChange(page + 1)}
                 >

@@ -1,9 +1,4 @@
-import {
-  createFileRoute,
-  redirect,
-  useNavigate,
-  Link,
-} from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Page, ErrorMessage, RetryButton } from "@/components/page";
 import { useSession } from "@/lib/session";
 import { getRuntime } from "@/lib/runtime-resource";
@@ -78,7 +73,6 @@ export const Route = createFileRoute("/select")({
           Check your recording and participant metadata, then try again.
         </ErrorMessage>
         <RetryButton reset={reset} />
-        <Link to="/metadata">Edit metadata</Link>
       </Page>
     );
   },
@@ -134,8 +128,8 @@ function SelectionPage() {
   }
   return (
     <Page
-      title="Select rows"
-      description={`${state.files?.recording.name} · ${rows.length} ${state.index?.split === "days" ? (rows.length === 1 ? "day" : "days") : rows.length === 1 ? "row" : "rows"}`}
+      title="Select recordings"
+      description={`${state.files?.recording.name} · ${rows.length} ${state.index?.split === "days" ? (rows.length === 1 ? "day" : "days") : rows.length === 1 ? "recording" : "recordings"}`}
     >
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-2">
@@ -175,7 +169,7 @@ function SelectionPage() {
             <TableHead>
               <input
                 type="checkbox"
-                aria-label="Select all rows"
+                aria-label="Select all recordings"
                 checked={
                   rows.length > 0 && rows.every((row) => selected.has(row.id))
                 }
@@ -222,10 +216,7 @@ function SelectionPage() {
           ))}
         </TableBody>
       </Table>
-      {!rows.length && <p>No rows were found in this recording.</p>}
-      <Link to="/metadata" className="text-sm text-primary underline">
-        Edit metadata
-      </Link>
+      {!rows.length && <p>No recordings were found in this dataset.</p>}
     </Page>
   );
 }

@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { LoaderCircle } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/lib/session";
 import { cancelRuntime } from "@/lib/runtime-resource";
 import { Page, ErrorMessage } from "@/components/page";
@@ -33,10 +34,10 @@ function RunningPage() {
       {state.jobRows.length > 0 ? (
         <>
           <p role="status">
-            {processed} of {state.jobRows.length} rows processed.
+            {processed} of {state.jobRows.length} recordings processed.
           </p>
           <Progress
-            aria-label="Rows processed"
+            aria-label="Recordings processed"
             value={(processed / state.jobRows.length) * 100}
           />
           <ul className="divide-y">
@@ -46,11 +47,17 @@ function RunningPage() {
                 className="flex flex-wrap justify-between gap-3 py-4"
               >
                 <span>{row.label}</span>
-                <span className="text-sm text-muted-foreground">
+                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                  {state.outcomes[row.id]?.status === "running" && (
+                    <LoaderCircle
+                      aria-hidden="true"
+                      className="size-3.5 animate-spin"
+                    />
+                  )}
                   {state.outcomes[row.id]?.message ||
                     {
                       queued: "Waiting",
-                      running: "Analyzing…",
+                      running: "Running",
                       complete: "Complete",
                       error: "Could not analyze",
                       cancelled: "Cancelled",
@@ -61,32 +68,20 @@ function RunningPage() {
           </ul>
         </>
       ) : (
-        <p>No analysis is running. Select rows to begin.</p>
+        <p>No analysis is running. Select recordings to begin.</p>
       )}
-      <div className="flex flex-wrap gap-3">
-        {state.running ? (
-          <Button
-            variant="outline"
-            onClick={() => {
-              session.finish("");
-              cancelRuntime(queryClient);
-            }}
-          >
-            Cancel analysis
-          </Button>
-        ) : (
-          <>
-            <Button asChild variant="outline">
-              <Link to="/select">Select rows</Link>
-            </Button>
-            {state.jobRows.length > 0 && (
-              <Button asChild>
-                <Link to="/results">View results</Link>
-              </Button>
-            )}
-          </>
-        )}
-      </div>
+      {state.running && (
+        <Button
+          className="self-start"
+          variant="outline"
+          onClick={() => {
+            session.finish("");
+            cancelRuntime(queryClient);
+          }}
+        >
+          Cancel analysis
+        </Button>
+      )}
     </Page>
   );
 }
