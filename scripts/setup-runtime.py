@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import json
 import os
@@ -94,6 +95,24 @@ def bundle_sources() -> None:
     print(f"Created {PUBLIC / 'bootstrap.zip'}")
 
 
+def exclude_static_libraries(path: Path) -> None:
+    """Keep runtime files while dropping link-time archives from an empack package."""
+    with tarfile.open(path) as source:
+        members = source.getmembers()
+        if not any(member.name.endswith(".a") for member in members):
+            return
+        temporary = path.with_suffix(".tmp")
+        with temporary.open("wb") as output:
+            with gzip.GzipFile(filename="", mode="wb", fileobj=output, mtime=0) as compressed:
+                with tarfile.open(fileobj=compressed, mode="w") as target:
+                    for member in members:
+                        if not member.name.endswith(".a"):
+                            target.addfile(member, source.extractfile(member) if member.isfile() else None)
+    before = path.stat().st_size
+    temporary.replace(path)
+    print(f"Excluded static libraries from {path.name}: {before - path.stat().st_size:,} bytes saved")
+
+
 def build_runtime(jupyter: str | None, micromamba: str | None) -> None:
     index_channel()
     BUILD.mkdir(parents=True, exist_ok=True)
@@ -155,6 +174,8 @@ def build_runtime(jupyter: str | None, micromamba: str | None) -> None:
                 (metadata_path.parent / "kernel_packages" / package["filename"]).unlink()
         metadata["packages"] = [p for p in metadata["packages"] if p["name"] in locked_names]
         metadata_path.write_text(json.dumps(metadata, indent=2) + "\n")
+    for path in (PUBLIC / "xeus").rglob("*.tar.gz"):
+        exclude_static_libraries(path)
     for path in (PUBLIC / "xeus").rglob("*.map"):
         path.unlink()
 
