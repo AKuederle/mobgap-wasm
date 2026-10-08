@@ -1,0 +1,4 @@
+[submodule "mobgap"]
+	path = mobgap
+	url = https://github.com/mobilise-d/mobgap.git
+	branch = main

@@ -1,2 +1,16 @@
 # roborev snapshots
 /.roborev/
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+!src/lib/
+!src/lib/**
+/public/runtime/
+/runtime/build/
+/runtime/.venv/
+
+/runtime/recipes/pywavelets/native-reference.json
+__pycache__/
+.pytest_cache/
+.ruff_cache/
