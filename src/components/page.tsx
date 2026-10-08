@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useRouter } from "@tanstack/react-router";
+import { Button } from "./ui/button";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 export function Page({
   title,
@@ -26,4 +28,13 @@ export function ErrorMessage({ children }: { children: ReactNode }) {
       <AlertDescription>{children}</AlertDescription>
     </Alert>
   ) : null;
+}
+
+export function RetryButton({ reset }: { reset: () => void }) {
+  const router = useRouter();
+  return (
+    <Button onClick={() => void router.invalidate({ sync: true }).then(reset)}>
+      Retry
+    </Button>
+  );
 }

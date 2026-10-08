@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import type { AppContext } from "@/lib/session";
 import { useSession } from "@/lib/session";
 import Stepper from "@/components/shadcn-space/stepper/stepper-01";
-import { Page, ErrorMessage } from "@/components/page";
+import { Page, ErrorMessage, RetryButton } from "@/components/page";
 
 export const Route = createRootRouteWithContext<AppContext>()({
   beforeLoad: ({ context, location }) => {
@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<AppContext>()({
   errorComponent: ({ reset }) => (
     <Page title="Unable to open this page">
       <ErrorMessage>Please try again.</ErrorMessage>
-      <button onClick={reset}>Retry</button>
+      <RetryButton reset={reset} />
     </Page>
   ),
 });

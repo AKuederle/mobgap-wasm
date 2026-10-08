@@ -4,7 +4,7 @@ import {
   useNavigate,
   Link,
 } from "@tanstack/react-router";
-import { Page, ErrorMessage } from "@/components/page";
+import { Page, ErrorMessage, RetryButton } from "@/components/page";
 import { useSession } from "@/lib/session";
 import { getRuntime } from "@/lib/runtime-resource";
 import type { PipelinePreset } from "@/lib/contracts";
@@ -77,7 +77,7 @@ export const Route = createFileRoute("/select")({
         <ErrorMessage>
           Check your recording and participant metadata, then try again.
         </ErrorMessage>
-        <Button onClick={reset}>Retry</Button>
+        <RetryButton reset={reset} />
         <Link to="/metadata">Edit metadata</Link>
       </Page>
     );
