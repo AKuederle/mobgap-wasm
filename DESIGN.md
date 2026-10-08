@@ -8,6 +8,6 @@ TanStack Query owns the initialized runtime resource and shared preparation task
 
 Route guards enforce metadata prerequisites, runtime readiness, and the processing navigation lock. URL search owns selected row keys, preset, and result/table pagination. Dataset session identity prevents selections from previous recordings being reused. Loading routes use validated internal return destinations. Page navigation never starts pipeline analysis.
 
-The preparation page differentiates downloading missing analysis tools from starting cached tools. Only complete current asset caches qualify for background startup. Cached startup never falls back to downloading large assets silently.
+The preparation page is fullscreen, with no application header, footer or stepper. It differentiates downloading missing analysis tools from starting cached tools. Only complete current asset caches qualify for background startup. Cached startup never falls back to downloading large assets silently.
 
 Use real download and processed-row progress. No implementation notes appear in the workflow. Errors explain what the user can do; detailed diagnostics go to the developer console. Use system-scale typography, tabular numbers, semantic shadcn colors, and restrained motion.

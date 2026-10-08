@@ -1,7 +1,5 @@
 # Stateless analysis and routed setup rewrite
 
-COMPACTION CONTINUITY: Re-read implement-code-change and the task-defining artifacts before continuing after compaction or session restoration.
-
 The current conversation's accepted design supersedes the previous prototype architecture.
 
 ## Acceptance
@@ -32,6 +30,10 @@ Base: origin/main at 95d2492. Initial tree clean. npm ci succeeded. Baseline bui
 
 Use src/lib/contracts.ts as the shared contract. Configuration uses format, cohort, participantHeightM, sensorHeightM, measurementCondition, timezone, split ('auto'|'days'|'file'). Files stay outside JSON. InputFiles is {recording: File, metadata?: File}. DatasetRow is {id: string, index: Record<string,string>, label: string}. DatasetIndex is {rows: DatasetRow[], split: 'days'|'file'}. Existing AnalysisResult/table structure retained initially. Process events: {rowId, status: 'running'|'complete'|'error', result?, message?}. Python emits JSON lines with __MOBGAP_EVENT__ prefix; load index returns JSON. No retained Python state. Runtime provides loadIndex(files, config) and process(files, config, selectedRows, preset, onEvent), cancel()/dispose(). Runtime resource/cache module provides documented functions for UI agent; coordinate exact names directly.
 
-## Verification and delivery status
+## Verification and review outcome
 
-Reader prerequisite is committed and draft PR #1 is registered. The coherent rewrite passes build and native/browser eight-table parity for HA and MS. Browser cache, cancellation, guards and timezone behavior are recorded in VALIDATION.md. Final commit review, stack curation, final review and delivery remain.
+Implementation and verification are complete; PR #1 contains the result. See VALIDATION.md for observed behavior and the public CWA fixture limitation.
+
+The curated stack is based on 95d24923420d03d3f901916d1a9dcbe814e3727a: reader update 4d7d30e and application rewrite 2441395. Final whole-stack RoboRev job 14313 reviewed 244139552fcc51f07da6041870d12f869ef511d2. No feature_ready panel was configured, so the review used the single-review fallback.
+
+The reviewed history is preserved. Normal correction commits 2830ba1 (failed-route retry) and 78dff55 (failed-operation traceback cleanup) address both final findings. Their automatic reviews 14314 and 14315 passed; the final review and all implementation reviews are closed. No permanent Python wrapper tests were added. The scientific submodule is unchanged.

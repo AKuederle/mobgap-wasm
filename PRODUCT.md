@@ -8,7 +8,7 @@ The workflow is Dataset, Metadata, Select rows, Running, Results. Dataset select
 
 CWA supports single-file analysis and local calendar days. Automatic splitting uses calendar days for recordings longer than 24 hours. Users can choose explicitly. Timezone selection is an autocomplete combobox and must be confirmed by the user.
 
-Analysis tools download only when first needed. A dedicated preparation page explains the download and returns to the intended step after startup succeeds. On later visits, a complete current asset cache starts in the background. If startup is unfinished when needed, the preparation page waits for it. Background preparation never blocks editing or navigation.
+Analysis tools download only when first needed. A fullscreen preparation page without a header, footer or stepper explains the download and returns to the intended step after startup succeeds. On later visits, a complete current asset cache starts in the background. If startup is unfinished when needed, the preparation page waits for it. Background preparation never blocks editing or navigation.
 
 During analysis, navigation returns to Running and explains that cancellation is required before another operation. Completed results survive cancellation. Ordinary row errors do not stop subsequent rows; completion opens Results. All output tables can be viewed and exported to CSV without display rounding.
 
