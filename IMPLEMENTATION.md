@@ -50,10 +50,10 @@ Follow-up implementation b7e0b1c passed automatic review 14317 and final task-ra
 
 ## Static runtime library exclusion
 
-COMPACTION CONTINUITY: Re-read implement-code-change and the task-defining artifacts before continuing after compaction or session restoration.
-
 User request: exclude the static binaries identified in the bundle-size audit. Preserve runtime behavior, all dynamically loaded libraries, scientific code, source package locks and licenses. Limit this change to removing `.a` static archives from the delivered package tarballs. Retain upstream empack filtering and generate fresh runtime asset hashes after packaging.
 
 Base: origin/main merge 4bf7a3fb86e8f15b804f4aef971818e28be6f94a. Clean tree; new branch t3code/trim-runtime-packages. One review unit: package exclusions and measured evidence. Gates: rebuild runtime and frontend, inspect archives and retained files, cold browser startup with public Healthy/Impaired processing and numerical parity, CWA reader smoke, commit/push/new PR, per-commit and final range review. No permanent Python tests or changes to the scientific submodule. Parent owns all work.
 
 Verification: runtime preparation and subpath production build pass. Removed 36 `.a` entries from nine packages, saving 14,594,386 archive bytes; manifest assets total 79,154,696 bytes versus 93,749,767 before. Every retained member has identical file bytes or link metadata. Repacking is deterministic and idempotent. A fresh runtime cache version downloaded and started successfully. All three HA and all three MS recordings completed; Test11 Healthy and Impaired outputs exactly match the previous runtime across all eight tables. The CWA reader indexed and decoded the public fixture to 72,472 samples × 3 acceleration channels. Successful six-axis CWA processing remains outside this fixture's coverage.
+
+Static-library exclusion is complete in b78fbae. Automatic review 14321 and final task-range review 14322 against 4bf7a3f passed without findings and are closed. The reviewed commit remains intact; no runtime correction was required. Delivered as PR #2 without merging or deploying.
