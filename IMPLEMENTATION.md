@@ -24,8 +24,14 @@ Parent owns integration, documents, verification, commits, PR, and final reviews
 2. Coherent app rewrite integrating stateless Python, runtime lifecycle/cache, and routed forms. Interfaces agreed before parallel edits. Gate: typecheck/build, real runtime/browser flows, no obsolete consumers, React diagnostics; commit and push.
 3. Any independently useful verification or review corrections with their evidence; final stack review and delivery.
 
-Base: origin/main at 95d2492. Initial tree clean. npm ci succeeded. Baseline build pending. Roborev healthy.
+Additional accepted requirements: examples are fetched on demand from the public mobgap GitHub registry and files, never bundled. Runtime preparation is fullscreen without header, footer or stepper.
+
+Base: origin/main at 95d2492. Initial tree clean. npm ci succeeded. Baseline build passed. Roborev healthy.
 
 ## Integration contract
 
 Use src/lib/contracts.ts as the shared contract. Configuration uses format, cohort, participantHeightM, sensorHeightM, measurementCondition, timezone, split ('auto'|'days'|'file'). Files stay outside JSON. InputFiles is {recording: File, metadata?: File}. DatasetRow is {id: string, index: Record<string,string>, label: string}. DatasetIndex is {rows: DatasetRow[], split: 'days'|'file'}. Existing AnalysisResult/table structure retained initially. Process events: {rowId, status: 'running'|'complete'|'error', result?, message?}. Python emits JSON lines with __MOBGAP_EVENT__ prefix; load index returns JSON. No retained Python state. Runtime provides loadIndex(files, config) and process(files, config, selectedRows, preset, onEvent), cancel()/dispose(). Runtime resource/cache module provides documented functions for UI agent; coordinate exact names directly.
+
+## Verification and delivery status
+
+Reader prerequisite is committed and draft PR #1 is registered. The coherent rewrite passes build and native/browser eight-table parity for HA and MS. Browser cache, cancellation, guards and timezone behavior are recorded in VALIDATION.md. Final commit review, stack curation, final review and delivery remain.

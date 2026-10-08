@@ -2,109 +2,108 @@ import {
   ArrowDownToLine,
   ChevronLeft,
   ChevronRight,
-  CheckCircle2
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+  CheckCircle2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Field, FieldLabel } from '@/components/ui/field'
-import type { AnalysisResult } from '@/lib/contracts'
+  TableRow,
+} from "@/components/ui/table";
+import { Field, FieldLabel } from "@/components/ui/field";
+import type { AnalysisResult } from "@/lib/contracts";
 
-type ResultTable = AnalysisResult['tables'][string]
-const PAGE_SIZE = 25
+type ResultTable = AnalysisResult["tables"][string];
+const PAGE_SIZE = 25;
 const labels: Record<string, string> = {
-  walking_bouts: 'Walking bouts',
-  gait_sequences: 'Gait sequences',
-  initial_contacts: 'Initial contacts',
-  turns: 'Turns',
-  per_second_parameters: 'Parameters per second',
-  raw_per_stride_parameters: 'Raw stride parameters',
-  aggregated_parameters: 'Aggregated parameters',
-  per_stride_parameters: 'Strides'
-}
-const tableLabel = (name: string) => labels[name]
+  walking_bouts: "Walking bouts",
+  gait_sequences: "Gait sequences",
+  initial_contacts: "Initial contacts",
+  turns: "Turns",
+  per_second_parameters: "Parameters per second",
+  raw_per_stride_parameters: "Raw stride parameters",
+  aggregated_parameters: "Aggregated parameters",
+  per_stride_parameters: "Strides",
+};
+const tableLabel = (name: string) => labels[name];
 
-const numericFormat = new Intl.NumberFormat('en', { maximumFractionDigits: 4 })
+const numericFormat = new Intl.NumberFormat("en", { maximumFractionDigits: 4 });
 const cellText = (value: unknown): string => {
-  if (value === null || value === undefined) return '—'
-  if (typeof value === 'number') return numericFormat.format(value)
-  if (typeof value === 'object') return JSON.stringify(value)
-  return String(value)
-}
+  if (value === null || value === undefined) return "—";
+  if (typeof value === "number") return numericFormat.format(value);
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
+};
 function csvCell(value: unknown): string {
   const text =
     value === null || value === undefined
-      ? ''
-      : typeof value === 'object'
+      ? ""
+      : typeof value === "object"
         ? JSON.stringify(value)
-        : String(value)
-  return `"${text.replaceAll('"', '""')}"`
+        : String(value);
+  return `"${text.replaceAll('"', '""')}"`;
 }
 function downloadCsv(table: ResultTable, filename: string) {
-  const rows = table.rows.map((row) => row.map(csvCell).join(','))
+  const rows = table.rows.map((row) => row.map(csvCell).join(","));
   const csv =
-    '\ufeff' + [table.columns.map(csvCell).join(','), ...rows].join('\r\n')
+    "\ufeff" + [table.columns.map(csvCell).join(","), ...rows].join("\r\n");
   const url = URL.createObjectURL(
-    new Blob([csv], { type: 'text/csv;charset=utf-8' })
-  )
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
+    new Blob([csv], { type: "text/csv;charset=utf-8" }),
+  );
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 export function ResultsPanel({
   result,
   recordingLabel,
-  downloadPrefix = 'mobgap',
+  downloadPrefix = "mobgap",
   selectedTable: requestedTable,
   onTableChange,
   page: requestedPage = 0,
-  onPageChange
+  onPageChange,
 }: {
-  result: AnalysisResult
-  recordingLabel: string
-  downloadPrefix?: string
-  selectedTable?: string
-  onTableChange: (table: string) => void
-  page?: number
-  onPageChange: (page: number) => void
+  result: AnalysisResult;
+  recordingLabel: string;
+  downloadPrefix?: string;
+  selectedTable?: string;
+  onTableChange: (table: string) => void;
+  page?: number;
+  onPageChange: (page: number) => void;
 }) {
-  const tableNames = Object.keys(result.tables)
+  const tableNames = Object.keys(result.tables);
   const defaultTable =
-    tableNames.find((name) => name === 'walking_bouts') ?? tableNames[0] ?? ''
+    tableNames.find((name) => name === "walking_bouts") ?? tableNames[0] ?? "";
   const selectedTable =
     requestedTable && tableNames.includes(requestedTable)
       ? requestedTable
-      : defaultTable
-  const table = result.tables[selectedTable]
+      : defaultTable;
+  const table = result.tables[selectedTable];
   const totalPages = table
     ? Math.max(1, Math.ceil(table.rows.length / PAGE_SIZE))
-    : 1
-  const page = Math.min(requestedPage, totalPages - 1)
+    : 1;
+  const page = Math.min(requestedPage, totalPages - 1);
   const statistics = [
-    ['Walking bouts', result.summary.walkingBouts],
-    ['Gait sequences', result.summary.gaitSequences],
-    ['Initial contacts', result.summary.initialContacts],
-    ['Strides', result.summary.strides]
-  ] as const
+    ["Walking bouts", result.summary.walkingBouts],
+    ["Gait sequences", result.summary.gaitSequences],
+    ["Initial contacts", result.summary.initialContacts],
+    ["Strides", result.summary.strides],
+  ] as const;
 
   return (
     <div className="flex flex-col gap-6">
@@ -121,11 +120,11 @@ export function ResultsPanel({
         </div>
         <div className="text-right text-xs text-muted-foreground">
           <p>
-            {result.preset === 'auto'
-              ? 'Auto (cohort selection)'
-              : result.preset === 'healthy'
-                ? 'Healthy walking preset'
-                : 'Impaired walking preset'}
+            {result.preset === "auto"
+              ? "Auto (cohort selection)"
+              : result.preset === "healthy"
+                ? "Healthy walking preset"
+                : "Impaired walking preset"}
           </p>
           <p className="mt-1 tabular-nums">
             {result.summary.processingSeconds.toFixed(2)} s computation
@@ -140,18 +139,6 @@ export function ResultsPanel({
           </div>
         ))}
       </dl>
-      {result.warnings.length > 0 ? (
-        <Alert>
-          <AlertTitle>Notes from this analysis</AlertTitle>
-          <AlertDescription>
-            <ul className="list-disc pl-4">
-              {result.warnings.map((warning) => (
-                <li key={warning}>{warning}</li>
-              ))}
-            </ul>
-          </AlertDescription>
-        </Alert>
-      ) : null}
       <div className="results-table-section">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <Field className="w-full max-w-xs">
@@ -178,7 +165,7 @@ export function ResultsPanel({
               table &&
               downloadCsv(
                 table,
-                `${downloadPrefix}-${result.preset}-${selectedTable}.csv`
+                `${downloadPrefix}-${result.preset}-${selectedTable}.csv`,
               )
             }
           >
@@ -194,7 +181,7 @@ export function ResultsPanel({
                   <TableRow>
                     {table.columns.map((column) => (
                       <TableHead key={column} title={column}>
-                        {column.replace(/_+/g, ' ')}
+                        {column.replace(/_+/g, " ")}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -258,17 +245,6 @@ export function ResultsPanel({
           </p>
         )}
       </div>
-      <details className="text-xs text-muted-foreground">
-        <summary className="cursor-pointer">Runtime versions</summary>
-        <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
-          {Object.entries(result.versions ?? {}).map(([name, version]) => (
-            <div key={name} className="flex justify-between gap-4">
-              <dt>{name}</dt>
-              <dd className="font-mono">{version}</dd>
-            </div>
-          ))}
-        </dl>
-      </details>
     </div>
-  )
+  );
 }

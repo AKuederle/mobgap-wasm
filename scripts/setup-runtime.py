@@ -82,10 +82,7 @@ def bundle_sources() -> None:
             f"mobgap-{version}.dist-info/METADATA", f"Metadata-Version: 2.1\nName: mobgap\nVersion: {version}\n"
         )
         output.write(DEMO / "python" / "mobgap_demo_api.py", "mobgap_demo_api.py")
-        for name in ("file_access_probe.py", "cwa_window_probe.py", "cwa_pipeline_probe.py"):
-            output.write(DEMO / "python" / name, name)
-        for name in ("workerfs.js", "bridge.js"):
-            output.write(RUNTIME / "workerfs" / name, name)
+        output.write(RUNTIME / "workerfs" / "workerfs.js", "workerfs.js")
         output.write(RUNTIME / "workerfs" / "LICENSE.emscripten", "LICENSE.emscripten")
         names = set(output.namelist())
         for wheel in wheels:

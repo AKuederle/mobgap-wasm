@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DatasetRouteImport } from './routes/dataset'
-import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as MetadataRouteImport } from './routes/metadata'
 import { Route as ResultsRouteImport } from './routes/results'
-import { Route as UploadRouteImport } from './routes/upload'
+import { Route as RunningRouteImport } from './routes/running'
+import { Route as RuntimeRouteImport } from './routes/runtime'
+import { Route as SelectRouteImport } from './routes/select'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,9 +27,9 @@ const DatasetRoute = DatasetRouteImport.update({
   path: '/dataset',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProgressRoute = ProgressRouteImport.update({
-  id: '/progress',
-  path: '/progress',
+const MetadataRoute = MetadataRouteImport.update({
+  id: '/metadata',
+  path: '/metadata',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResultsRoute = ResultsRouteImport.update({
@@ -35,48 +37,88 @@ const ResultsRoute = ResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => rootRouteImport,
 } as any)
-const UploadRoute = UploadRouteImport.update({
-  id: '/upload',
-  path: '/upload',
+const RunningRoute = RunningRouteImport.update({
+  id: '/running',
+  path: '/running',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RuntimeRoute = RuntimeRouteImport.update({
+  id: '/runtime',
+  path: '/runtime',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SelectRoute = SelectRouteImport.update({
+  id: '/select',
+  path: '/select',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dataset': typeof DatasetRoute
-  '/progress': typeof ProgressRoute
+  '/metadata': typeof MetadataRoute
   '/results': typeof ResultsRoute
-  '/upload': typeof UploadRoute
+  '/running': typeof RunningRoute
+  '/runtime': typeof RuntimeRoute
+  '/select': typeof SelectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dataset': typeof DatasetRoute
-  '/progress': typeof ProgressRoute
+  '/metadata': typeof MetadataRoute
   '/results': typeof ResultsRoute
-  '/upload': typeof UploadRoute
+  '/running': typeof RunningRoute
+  '/runtime': typeof RuntimeRoute
+  '/select': typeof SelectRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dataset': typeof DatasetRoute
-  '/progress': typeof ProgressRoute
+  '/metadata': typeof MetadataRoute
   '/results': typeof ResultsRoute
-  '/upload': typeof UploadRoute
+  '/running': typeof RunningRoute
+  '/runtime': typeof RuntimeRoute
+  '/select': typeof SelectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dataset' | '/progress' | '/results' | '/upload'
+  fullPaths:
+    | '/'
+    | '/dataset'
+    | '/metadata'
+    | '/results'
+    | '/running'
+    | '/runtime'
+    | '/select'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dataset' | '/progress' | '/results' | '/upload'
-  id: '__root__' | '/' | '/dataset' | '/progress' | '/results' | '/upload'
+  to:
+    | '/'
+    | '/dataset'
+    | '/metadata'
+    | '/results'
+    | '/running'
+    | '/runtime'
+    | '/select'
+  id:
+    | '__root__'
+    | '/'
+    | '/dataset'
+    | '/metadata'
+    | '/results'
+    | '/running'
+    | '/runtime'
+    | '/select'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DatasetRoute: typeof DatasetRoute
-  ProgressRoute: typeof ProgressRoute
+  MetadataRoute: typeof MetadataRoute
   ResultsRoute: typeof ResultsRoute
-  UploadRoute: typeof UploadRoute
+  RunningRoute: typeof RunningRoute
+  RuntimeRoute: typeof RuntimeRoute
+  SelectRoute: typeof SelectRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,11 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DatasetRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/progress': {
-      id: '/progress'
-      path: '/progress'
-      fullPath: '/progress'
-      preLoaderRoute: typeof ProgressRouteImport
+    '/metadata': {
+      id: '/metadata'
+      path: '/metadata'
+      fullPath: '/metadata'
+      preLoaderRoute: typeof MetadataRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/results': {
@@ -109,11 +151,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/upload': {
-      id: '/upload'
-      path: '/upload'
-      fullPath: '/upload'
-      preLoaderRoute: typeof UploadRouteImport
+    '/running': {
+      id: '/running'
+      path: '/running'
+      fullPath: '/running'
+      preLoaderRoute: typeof RunningRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/runtime': {
+      id: '/runtime'
+      path: '/runtime'
+      fullPath: '/runtime'
+      preLoaderRoute: typeof RuntimeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/select': {
+      id: '/select'
+      path: '/select'
+      fullPath: '/select'
+      preLoaderRoute: typeof SelectRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -122,9 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DatasetRoute: DatasetRoute,
-  ProgressRoute: ProgressRoute,
+  MetadataRoute: MetadataRoute,
   ResultsRoute: ResultsRoute,
-  UploadRoute: UploadRoute,
+  RunningRoute: RunningRoute,
+  RuntimeRoute: RuntimeRoute,
+  SelectRoute: SelectRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

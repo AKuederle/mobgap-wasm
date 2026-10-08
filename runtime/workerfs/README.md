@@ -1,24 +1,7 @@
-# WORKERFS backend for the Xeus demo
+# Browser file access
 
-`workerfs.js` adapts the official Emscripten 4.0.9 backend, preserving its file,
-seek, directory and read-only operations. `libworkerfs.upstream.js` is the exact
-original; `provenance.json` records its URL and SHA-256. The original is an
-Emscripten build library and cannot be executed directly because it contains
-build macros. The adapter resolves those macros against the kernel's exported
-`Module.FS` and `Module.ERRNO_CODES`, then exposes `globalThis.WORKERFS`.
+`workerfs.js` is a runtime adaptation of the official Emscripten 4.0.9 read-only WORKERFS backend. The original Emscripten library contains build macros; `libworkerfs.upstream.js` and `provenance.json` retain its source and provenance. The MIT license is preserved.
 
-Evaluate the adapter inside the initialized Xeus worker. Mount selected browser
-Files with `Module.FS.mount(WORKERFS, {files}, mountPath)` after creating the
-mount directory. Pass File objects through the existing Xeus
-`callGlobalReceiver` bridge using structured clone, without putting them in a
-transfer list. Use distinct mount paths for files with duplicate names.
+The dedicated Xeus worker mounts selected File objects directly with `FS.mount` for each dataset operation and unmounts them afterward. FileReaderSync reads only requested slices. The application retains File references for subsequent operations; it does not copy whole recordings into WASM memory or persistent storage.
 
-Unmount and release global references when replacing the input or cancelling.
-This removes the complete base64/upload-buffer/MEMFS copy at ingress. Reads
-still copy requested File slices into the Wasm buffer, and SciPy's MATLAB
-loader still allocates decoded arrays; this is not a zero-copy pipeline.
-
-The backend is copyright 2015 The Emscripten Authors, SPDX MIT. Its header is
-retained, and `LICENSE.emscripten` contains the complete upstream license text.
-Native mobgap behavior and APIs are unchanged. Browser integration and actual
-MATLAB/pipeline checks belong to the runtime integration owner.
+There is no custom diagnostic bridge, read interception, or probe protocol. The backend remains necessary because xeus-core does not itself map arbitrary browser-selected files to Python paths. Python datasets still allocate decoded arrays independently of the filesystem backend.

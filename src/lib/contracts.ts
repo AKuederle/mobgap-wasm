@@ -2,40 +2,23 @@
 export type PipelinePreset = 'healthy' | 'impaired' | 'auto'
 export type ProgressHandler = (progress: RuntimeProgress) => void
 export interface RuntimeProgress { stage: string; message: string; percent?: number }
-export interface Recording {
-  id: string
-  sourceFormat?: 'mat' | 'cwa'
-  cwa?: { startTimeRaw: string; endTimeRaw: string; hasGyroscope: boolean; clockTimezoneRequired: true }
-  fileName: string
-  label: string
-  testName: string[]
-  datasetIndex?: Record<string, string>
-  samples: number | null
-  samplingRateHz: number
-  durationSeconds: number
-  channels: string[]
-  sensorPosition: string
-  metadata: { heightM?: number; sensorHeightM?: number }
-  warnings: string[]
-}
-export interface FileInspectionError { fileName: string; code: string; message: string }
-export interface InspectionResult { recordings: Recording[]; errors: FileInspectionError[]; warnings: string[] }
+export interface InputFiles { recording: File; metadata?: File }
 export interface DatasetConfiguration {
+  format: 'mat' | 'cwa'
   cohort: string
-  heightM?: number
+  participantHeightM?: number
   sensorHeightM?: number
-  measurementCondition?: 'laboratory' | 'free_living'
+  measurementCondition: 'laboratory' | 'free_living'
   timezone?: string
+  split: 'auto' | 'days' | 'file'
 }
-export interface RunPipelineOptions {
-  recordingId: string
-  pipeline: PipelinePreset
-  heightM: number
-  sensorHeightM: number
-  cohort: string
-  measurementCondition?: 'laboratory' | 'free_living'
-  cwaFile?: { timezone: string }
-  cwaDay?: { index: number; timezone: string }
+export interface DatasetRow { id: string; index: Record<string, string>; label: string }
+export interface DatasetIndex { rows: DatasetRow[]; split: 'days' | 'file' }
+export interface ProcessEvent {
+  rowId: string
+  status: 'running' | 'complete' | 'error'
+  result?: AnalysisResult
+  message?: string
 }
 export type CellValue = string | number | boolean | null
 export interface DataTable { columns: string[]; rows: CellValue[][] }
@@ -48,12 +31,4 @@ export interface AnalysisResult {
     processingSeconds: number
   }
   tables: Record<string, DataTable>
-  warnings: string[]
-  versions?: Record<string, string>
 }
-
-export interface CwaDayWindow { index: number; label: string; startTime: string; endTime: string; startSeconds: number; durationSeconds: number }
-export interface CwaDayWindowsResult { windows: CwaDayWindow[]; timezone: string }
-
-export interface RunDaysOptions extends Omit<RunPipelineOptions, 'cwaFile' | 'cwaDay'> { dayIndices: number[]; timezone: string }
-export interface DayAnalysisEvent { day: CwaDayWindow; result?: AnalysisResult; error?: string; fatal?: boolean }
