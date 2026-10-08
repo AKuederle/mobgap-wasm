@@ -229,6 +229,7 @@ export function useLabController() {
       )
       return
     }
+    getRuntime().cancel()
     resetResources()
     invalidateDataset({ split: undefined, timezone: undefined })
     setFile(nextFiles[0])
@@ -289,6 +290,7 @@ export function useLabController() {
 
   async function loadSample(sample: Sample) {
     if (busy) return
+    getRuntime().cancel()
     resetResources()
     invalidateDataset({ split: undefined, timezone: undefined })
     const version = beginOperation('sample')
