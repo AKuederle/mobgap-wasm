@@ -1,0 +1,3 @@
+review_guidelines = """
+mobgap-wasm is an experimental prototype with no backwards-compatibility guarantee. Permit hard changes when all in-repository callers are updated; do not request compatibility shims. Once external consumers exist, require prominent breaking-change and migration documentation. The mobgap submodule follows its own strict policy. Selected recording files must stay local through WORKERFS; no whole-file staging or persistent copy. Preserve dependency license notices.
+"""
