@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "bun src/main.ts",
     "build": "bun scripts/build.ts",
+    "package": "bun scripts/package.ts",
     "check": "tsc --noEmit",
     "test": "bun test"
   },

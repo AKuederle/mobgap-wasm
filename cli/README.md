@@ -1,8 +1,17 @@
 # mobgap CLI
 
-The Bun executable embeds the same Xeus Python WASM kernel, pinned scientific packages, mobgap source, and Python API as the web application. Running it needs no installed Python, Bun, package manager, runtime directory, or network connection. Build an executable for the target operating system and architecture; the scientific WASM payload is shared across platforms. Linux x64 is currently exercised in CI.
+The Bun executable embeds the same Xeus Python WASM kernel, pinned scientific packages, mobgap source, and Python API as the web application. Running it needs no installed Python, Bun, package manager, runtime directory, or network connection. Bun cross-compiles the executable for Linux, macOS and Windows, x64 and arm64. All targets embed the same scientific WASM payload.
 
 ## Commands
+
+The website footer links to [GitHub Releases](https://github.com/AKuederle/mobgap-wasm/releases/latest). Download the archive matching your operating system and CPU. `darwin` means macOS; choose `arm64` for Apple silicon and `x64` for Intel. Linux archives use glibc. Extract the archive and run the executable:
+
+```sh
+tar -xzf mobgap-linux-x64.tar.gz
+./mobgap --help
+```
+
+On Windows, run `./mobgap.exe --help` after extracting the matching archive. Archives retain executable permissions and include usage instructions and dependency notices. GitHub Releases hosts the downloads separately from the website.
 
 ```sh
 mobgap list-recordings data.mat
@@ -94,6 +103,20 @@ npm run cli:test
 ./cli/dist/mobgap --help
 ```
 
-The build checks scientific package versions/builds against `runtime/packages.lock.json`, embeds all runtime assets and the worker, and disables loading local `.env`, Bun, package and TypeScript configuration files in the executable. The output is `cli/dist/mobgap` (`mobgap.exe` on Windows), accompanied by `THIRD_PARTY_NOTICES.txt`. Build on the desired target platform; this script does not currently offer cross-compilation.
+The build checks scientific package versions/builds against `runtime/packages.lock.json`, embeds all runtime assets and the worker, and disables loading local `.env`, Bun, package and TypeScript configuration files in the executable. By default it builds for the host, producing `cli/dist/mobgap` or `mobgap.exe`, accompanied by `THIRD_PARTY_NOTICES.txt`.
 
-`npm run cli -- <command> ...` runs the TypeScript source against assets staged by `cli:build`. `cli:test` exercises real MATLAB/CWA fixtures and a selected full pipeline, so prepare and build the runtime first. CI performs these checks and uploads the Linux executable.
+Cross-compilation uses Bun's `compile.target`; no target Python environment or C/C++ toolchain is needed once the shared WASM assets are prepared:
+
+```sh
+npm run cli:build -- --target bun-darwin-arm64
+npm run cli:build -- --all
+npm run cli:package
+```
+
+Supported targets are `bun-linux-x64`, `bun-linux-arm64`, `bun-darwin-x64`, `bun-darwin-arm64`, `bun-windows-x64` and `bun-windows-arm64`. Targeted builds go to `cli/dist/<platform>-<architecture>/`; `--all` builds all six from one shared runtime staging step. `cli:package` uses `tar` to produce matching archives under `cli/dist/releases`. Cross-compilation can download the pinned Bun runtime for each target during the build.
+
+`npm run cli -- <command> ...` runs the TypeScript source against assets staged by `cli:build`. `cli:test` exercises real MATLAB/CWA fixtures and a selected full pipeline, so prepare and build the runtime first. The full suite is available for local verification.
+
+Per-commit CI builds only Linux x64 and runs help, MATLAB listing, a full pipeline and license checks from the extracted archive, in an isolated directory with Python and Bun absent from PATH. It does not cross-compile other platforms for testing. Cross-compilation runs only when a GitHub Release is published. Tag pushes alone do not trigger it. The release workflow smoke-tests Linux; macOS, Windows and Linux ARM64 builds are cross-compiled without native test runs.
+
+To ship a version, create and publish a GitHub Release at the intended commit. Publishing a draft release also triggers the workflow; saving a draft does not. The workflow builds the release's tagged commit and attaches the archives after the Linux smoke test succeeds. Downloads appear once that workflow finishes. Reruns upload missing archives and leave existing binaries unchanged. The footer points to the latest published release; generated binaries and archives stay outside Git and Pages.

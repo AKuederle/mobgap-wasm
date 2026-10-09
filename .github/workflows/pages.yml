@@ -40,14 +40,13 @@ jobs:
         run: |
           bun install --cwd cli --frozen-lockfile
           npm run cli:check
-          npm run cli:build
-          npm run cli:test
+          npm run cli:build -- --target bun-linux-x64
+          npm run cli:package
+          node scripts/smoke-cli.mjs
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: mobgap-cli-linux-x64
-          path: |
-            cli/dist/mobgap
-            cli/dist/THIRD_PARTY_NOTICES.txt
+          path: cli/dist/releases/mobgap-linux-x64.tar.gz
       - name: Build static route documents and application
         run: npm run build -- --base=/mobgap-wasm/
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4

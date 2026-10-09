@@ -39,4 +39,6 @@ The `mobgap` scientific library is a pinned upstream submodule with its own comp
 
 GitHub Actions builds and publishes to GitHub Pages. Use `npm run build -- --base=/mobgap-wasm/` for the project subpath. Each file route receives a real static entry document so direct links work without a catch-all 404 redirect.
 
+The website footer links to the latest CLI on [GitHub Releases](https://github.com/AKuederle/mobgap-wasm/releases/latest). Per-commit CI builds only Linux x64 and runs a packaged CLI smoke test. Publishing a GitHub Release cross-compiles Linux, macOS and Windows executables for x64 and arm64 from the same scientific WASM payload, then attaches their archives to that release. Tag pushes alone do not build the other platforms. Archives include the executable, instructions and notices; large downloads stay outside Git and GitHub Pages.
+
 Licensed Apache-2.0; see LICENSE and NOTICE. Runtime dependency licenses are retained under `runtime/licenses`. The build emits `THIRD_PARTY_NOTICES.txt` for frontend dependencies.

@@ -12,6 +12,7 @@
     "worker:build": "node scripts/build-worker.mjs",
     "cli": "bun cli/src/main.ts",
     "cli:build": "bun run --cwd cli build",
+    "cli:package": "bun run --cwd cli package",
     "cli:check": "bun run --cwd cli check",
     "cli:test": "bun run --cwd cli test"
   },

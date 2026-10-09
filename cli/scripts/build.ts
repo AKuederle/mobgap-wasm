@@ -8,12 +8,34 @@ import {
   writeFileSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
+import { parseArgs } from "node:util";
 import type { RuntimeEnvironment } from "../src/protocol";
 
 const root = resolve(import.meta.dir, "../..");
 const cli = join(root, "cli");
 if (Bun.version !== "1.4.2")
   throw new Error("Build with Bun 1.4.2 to pin the executable runtime.");
+const targets = [
+  "bun-linux-x64",
+  "bun-linux-arm64",
+  "bun-darwin-x64",
+  "bun-darwin-arm64",
+  "bun-windows-x64",
+  "bun-windows-arm64",
+] as const;
+const { values } = parseArgs({
+  args: Bun.argv.slice(2),
+  options: {
+    target: { type: "string" },
+    all: { type: "boolean" },
+  },
+});
+if (values.all && values.target)
+  throw new Error("Use --all or --target, not both.");
+const requested = targets.find((target) => target === values.target);
+if (values.target && !requested)
+  throw new Error(`Choose a target: ${targets.join(", ")}`);
+const builds = values.all ? targets : [requested];
 const assets = join(cli, "build/runtime");
 const source = join(root, "public/runtime");
 const kernelSource = join(source, "xeus/mobgap-browser");
@@ -105,24 +127,28 @@ writeFileSync(
   join(assets, "environment.json"),
   JSON.stringify(environment, null, 2) + "\n",
 );
-mkdirSync(join(cli, "dist"), { recursive: true });
-writeFileSync(join(cli, "dist/THIRD_PARTY_NOTICES.txt"), noticeText);
-const result = await Bun.build({
-  entrypoints: [join(cli, "src/main.ts"), join(cli, "src/worker.ts")],
-  compile: {
-    outfile: join(
-      cli,
-      `dist/mobgap${process.platform === "win32" ? ".exe" : ""}`,
-    ),
-    assets: [assets],
-    autoloadDotenv: false,
-    autoloadBunfig: false,
-    autoloadPackageJson: false,
-    autoloadTsconfig: false,
-  },
-});
-if (!result.success)
-  throw new AggregateError(result.logs, "CLI compilation failed.");
-console.log(
-  `Built the self-contained mobgap CLI with runtime ${environment.id}.`,
-);
+for (const target of builds) {
+  const output = target
+    ? join(cli, "dist", target.slice(4))
+    : join(cli, "dist");
+  mkdirSync(output, { recursive: true });
+  writeFileSync(join(output, "THIRD_PARTY_NOTICES.txt"), noticeText);
+  const windows = target
+    ? target.includes("windows")
+    : process.platform === "win32";
+  const result = await Bun.build({
+    entrypoints: [join(cli, "src/main.ts"), join(cli, "src/worker.ts")],
+    compile: {
+      ...(target ? { target } : {}),
+      outfile: join(output, `mobgap${windows ? ".exe" : ""}`),
+      assets: [assets],
+      autoloadDotenv: false,
+      autoloadBunfig: false,
+      autoloadPackageJson: false,
+      autoloadTsconfig: false,
+    },
+  });
+  if (!result.success)
+    throw new AggregateError(result.logs, "CLI compilation failed.");
+  console.log(`Built ${target ?? "host"} with runtime ${environment.id}.`);
+}
