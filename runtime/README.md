@@ -13,3 +13,5 @@ Selected browser File objects are structured-cloned to the worker and temporaril
 Python exposes two stateless operations, documented in `python/README.md`. An index call returns actual dataset index keys. A processing call reconstructs the same dataset, selects those keys, and emits each row's outcome. No recording registry or retained batch iterator is used.
 
 For package rebuilds, see `recipes/pywavelets`, `recipes/python-xxhash`, and the upstream CWA reader v0.5.0 Xeus build instructions. Preserve license notices when replacing artifacts. Regenerate the source bundle with `python3 scripts/setup-runtime.py --bundle-only` after Python changes, then rebuild the worker manifest.
+
+After empack builds each package, setup removes `.a` static link libraries from the delivered archives. These build-time libraries are not loaded by the browser runtime. Dynamic libraries and all other package members remain unchanged, including license files. The worker build then hashes the reduced archives into a new runtime cache version. Original packages, locks, and build environments remain intact.
