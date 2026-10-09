@@ -159,6 +159,7 @@
 }
 .app-footer {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
   padding-block: 24px;

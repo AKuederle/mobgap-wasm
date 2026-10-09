@@ -2,6 +2,8 @@
 
 Run full mobgap gait analysis locally in your browser using Mobilise-D MATLAB or AX6 CWA recordings. Files stay on your device. This experimental research application uses genuine Xeus Python, Numba, and compiled scientific dependencies.
 
+A [standalone Bun CLI](cli/README.md) embeds the same WASM environment for offline `list-recordings` and `run-pipeline` commands. It requires no installed Python and exposes the web application's analysis settings. Scientific imports currently add roughly 13 seconds per invocation; the CLI documentation explains the measured startup cost.
+
 ## Local development
 
 ```sh
@@ -36,5 +38,7 @@ The `mobgap` scientific library is a pinned upstream submodule with its own comp
 ## Deployment and licenses
 
 GitHub Actions builds and publishes to GitHub Pages. Use `npm run build -- --base=/mobgap-wasm/` for the project subpath. Each file route receives a real static entry document so direct links work without a catch-all 404 redirect.
+
+The website footer links to the latest CLI on [GitHub Releases](https://github.com/AKuederle/mobgap-wasm/releases/latest). Per-commit CI builds only Linux x64 and runs a packaged CLI smoke test. Publishing a GitHub Release cross-compiles Linux, macOS and Windows executables for x64 and arm64 from the same scientific WASM payload, then attaches their archives to that release. Tag pushes alone do not build the other platforms. Archives include the executable, instructions and notices; large downloads stay outside Git and GitHub Pages.
 
 Licensed Apache-2.0; see LICENSE and NOTICE. Runtime dependency licenses are retained under `runtime/licenses`. The build emits `THIRD_PARTY_NOTICES.txt` for frontend dependencies.

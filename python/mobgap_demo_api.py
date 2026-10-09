@@ -58,16 +58,18 @@ def _metadata(configuration: dict[str, Any], source: dict[str, Any] | None = Non
     return metadata
 
 
-def _dataset(path: str, metadata_path: str | None, configuration: dict[str, Any]):
+def _dataset(path: str, metadata_path: str | None, configuration: dict[str, Any], *, validate_metadata: bool = True):
     if configuration["format"] == "mat":
         return GenericMobilisedDataset(
             Path(path),
-            participant_metadata_override=Path(metadata_path) if metadata_path else _metadata(configuration),
+            participant_metadata_override=(Path(metadata_path) if metadata_path else _metadata(configuration))
+            if validate_metadata
+            else None,
             measurement_condition=configuration["measurementCondition"],
         ), "file"
     dataset = AX6Dataset(
         Path(path),
-        participant_metadata=_metadata(configuration),
+        participant_metadata=_metadata(configuration) if validate_metadata else {},
         recording_metadata={"measurement_condition": configuration["measurementCondition"]},
         tz=configuration["timezone"],
         output_timezone="local",
@@ -91,11 +93,13 @@ def _row(values: dict[str, Any]) -> dict[str, Any]:
 
 
 @_operation
-def load_index(path: str, metadata_path: str | None, configuration: dict[str, Any]) -> dict[str, Any]:
+def load_index(
+    path: str, metadata_path: str | None, configuration: dict[str, Any], *, validate_metadata: bool = True
+) -> dict[str, Any]:
     """Construct a dataset and return its actual index values without retaining it."""
-    dataset, split = _dataset(path, metadata_path, configuration)
+    dataset, split = _dataset(path, metadata_path, configuration, validate_metadata=validate_metadata)
     rows = [_row(values) for values in dataset.index.to_dict(orient="records")]
-    if metadata_path and configuration["format"] == "mat":
+    if validate_metadata and metadata_path and configuration["format"] == "mat":
         # Validate the companion with the dataset's own unit conversion and lookup.
         for datapoint in dataset:
             _metadata(configuration, datapoint.participant_metadata)

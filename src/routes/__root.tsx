@@ -82,6 +82,14 @@ function AppShell() {
       </main>
       <footer className="app-footer">
         <span>Mobilise-D gait analysis</span>
+        <a
+          href="https://github.com/AKuederle/mobgap-wasm/releases/latest"
+          target="_blank"
+          rel="noreferrer"
+          className="underline underline-offset-4 hover:text-foreground"
+        >
+          Download CLI
+        </a>
         <span>Research use</span>
       </footer>
     </div>

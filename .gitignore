@@ -16,3 +16,4 @@ __pycache__/
 .ruff_cache/
 
 /public/runtime-sw.js
+/cli/build/

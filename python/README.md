@@ -1,4 +1,6 @@
-# Browser dataset operations
+# Shared browser and CLI dataset operations
+
+The CLI uses `load_index(..., validate_metadata=False)` to list recordings before participant information is supplied. This skips participant metadata construction and validation; format, timezone and split semantics remain the same. The default remains `True` for the browser and for pipeline preparation. Processing always requires valid participant metadata.
 
 `mobgap_demo_api.py` exposes two stateless operations. `load_index(path, metadata_path, configuration)` constructs a native mobgap dataset and returns its index rows. Each row contains a deterministic ID, a label and the actual index values as strings. `process(path, metadata_path, configuration, selected_rows, preset)` reconstructs the dataset, matches those index values and emits `__MOBGAP_EVENT__` JSON lines for running, complete and error events. The module retains no dataset or generator between calls and clears native dataset RAM caches when each operation ends. Exceptions retain their messages and call stacks, while decoded arrays are released from unwound traceback frames before the interpreter can retain the error. Small native header metadata memoization remains available.
 
