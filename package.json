@@ -9,7 +9,11 @@
     "build": "npm run worker:build && tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "runtime:prepare": "python3 scripts/setup-runtime.py",
-    "worker:build": "node scripts/build-worker.mjs"
+    "worker:build": "node scripts/build-worker.mjs",
+    "cli": "bun cli/src/main.ts",
+    "cli:build": "bun run --cwd cli build",
+    "cli:check": "bun run --cwd cli check",
+    "cli:test": "bun run --cwd cli test"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

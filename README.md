@@ -2,6 +2,8 @@
 
 Run full mobgap gait analysis locally in your browser using Mobilise-D MATLAB or AX6 CWA recordings. Files stay on your device. This experimental research application uses genuine Xeus Python, Numba, and compiled scientific dependencies.
 
+A [standalone Bun CLI](cli/README.md) embeds the same WASM environment for offline `list-recordings` and `run-pipeline` commands. It requires no installed Python and exposes the web application's analysis settings. Scientific imports currently add roughly 13 seconds per invocation; the CLI documentation explains the measured startup cost.
+
 ## Local development
 
 ```sh
